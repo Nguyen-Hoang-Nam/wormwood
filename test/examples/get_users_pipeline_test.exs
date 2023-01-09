@@ -8,7 +8,7 @@ defmodule Wormwood.Test.Examples.GetUsersPipelineTest do
     test "Should run with a custom pipeline, returning a blueprint of the query" do
       pipeline = [Absinthe.Phase.Parse, Absinthe.Phase.Blueprint]
 
-      result = query_gql_with_pipeline(pipeline)
+      result = query_gql_with_pipeline(pipeline, schema: Wormwood.Examples.Schema)
       assert {:ok, %Absinthe.Blueprint{} = _blueprint, _pipeline} = result
     end
   end

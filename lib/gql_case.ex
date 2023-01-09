@@ -253,15 +253,18 @@ defmodule Wormwood.GQLCase do
   assert {:ok, %Absinthe.Blueprint{} = _blueprint, _pipeline} = result
   ```
   """
-  defmacro query_gql_with_pipeline(pipeline_phases \\ [], options \\ []) do
+  defmacro query_gql_with_pipeline(pipeline_phases \\ [], options) do
     quote do
       if is_nil(@_wormwood_gql_query) do
         raise WormwoodSetupError, reason: :missing_declaration
       end
 
+      if is_nil(unquote(options) |> Keyword.get(:schema)) do
+        raise WormwoodPipelineError, reason: :missing_schema
+      end
+
       options_list =
         unquote(options)
-        |> Keyword.put(:schema, @_wormwood_gql_schema)
         |> Absinthe.Pipeline.options()
 
       pipeline = Enum.map(unquote(pipeline_phases), fn phase -> {phase, options_list} end)
