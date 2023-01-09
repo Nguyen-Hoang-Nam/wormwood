@@ -34,7 +34,7 @@ defmodule Wormwood.GQLCase do
     quote do
       document = GQLLoader.load_file!(unquote(file_path))
 
-      @_wormwood_gql_schemas
+      Module.get_attribute(unquote(__CALLER__.module), :_wormwood_gql_schemas)
       |> case do
         nil ->
           Module.put_attribute(unquote(__CALLER__.module), :_wormwood_gql_schemas, %{
@@ -42,10 +42,11 @@ defmodule Wormwood.GQLCase do
           })
 
         schemas ->
-          Module.put_attribute(unquote(__CALLER__.module), :_wormwood_gql_schemas, %{
-            @_wormwood_gql_schemas
-            | unquote(query_name) => unquote(schema)
-          })
+          Module.put_attribute(
+            unquote(__CALLER__.module),
+            :_wormwood_gql_schemas,
+            schemas |> Map.put(unquote(query_name), unquote(schema))
+          )
       end
 
       Module.register_attribute(unquote(__CALLER__.module), unquote(query_name), persist: true)
@@ -73,7 +74,7 @@ defmodule Wormwood.GQLCase do
 
       document = GQLLoader.load_file!(unquote(file_path))
 
-      @_wormwood_gql_schemas
+      Module.get_attribute(unquote(__CALLER__.module), :_wormwood_gql_schemas)
       |> case do
         nil ->
           Module.put_attribute(unquote(__CALLER__.module), :_wormwood_gql_schemas, %{
@@ -81,10 +82,11 @@ defmodule Wormwood.GQLCase do
           })
 
         schemas ->
-          Module.put_attribute(unquote(__CALLER__.module), :_wormwood_gql_schemas, %{
-            @_wormwood_gql_schemas
-            | static: unquote(schema)
-          })
+          Module.put_attribute(
+            unquote(__CALLER__.module),
+            :_wormwood_gql_schemas,
+            schemas |> Map.put(:static, unquote(schema))
+          )
       end
 
       Module.put_attribute(unquote(__CALLER__.module), :_wormwood_gql_query, document)
@@ -113,7 +115,7 @@ defmodule Wormwood.GQLCase do
     quote do
       document = GQLLoader.load_string!(unquote(query_string))
 
-      @_wormwood_gql_schemas
+      Module.get_attribute(unquote(__CALLER__.module), :_wormwood_gql_schemas)
       |> case do
         nil ->
           Module.put_attribute(unquote(__CALLER__.module), :_wormwood_gql_schemas, %{
@@ -121,13 +123,13 @@ defmodule Wormwood.GQLCase do
           })
 
         schemas ->
-          Module.put_attribute(unquote(__CALLER__.module), :_wormwood_gql_schemas, %{
-            @_wormwood_gql_schemas
-            | unquote(query_name) => unquote(schema)
-          })
+          Module.put_attribute(
+            unquote(__CALLER__.module),
+            :_wormwood_gql_schemas,
+            schemas |> Map.put(unquote(query_name), unquote(schema))
+          )
       end
 
-      Module.put_attribute(unquote(__CALLER__.module), :_wormwood_gql_schemas, unquote(schema))
       Module.register_attribute(unquote(__CALLER__.module), unquote(query_name), persist: true)
       Module.put_attribute(unquote(__CALLER__.module), unquote(query_name), document)
     end
@@ -154,7 +156,7 @@ defmodule Wormwood.GQLCase do
 
       document = GQLLoader.load_string!(unquote(query_string))
 
-      @_wormwood_gql_schemas
+      Module.get_attribute(unquote(__CALLER__.module), :_wormwood_gql_schemas)
       |> case do
         nil ->
           Module.put_attribute(unquote(__CALLER__.module), :_wormwood_gql_schemas, %{
@@ -162,10 +164,11 @@ defmodule Wormwood.GQLCase do
           })
 
         schemas ->
-          Module.put_attribute(unquote(__CALLER__.module), :_wormwood_gql_schemas, %{
-            @_wormwood_gql_schemas
-            | static: unquote(schema)
-          })
+          Module.put_attribute(
+            unquote(__CALLER__.module),
+            :_wormwood_gql_schemas,
+            schemas |> Map.put(:static, unquote(schema))
+          )
       end
 
       Module.put_attribute(unquote(__CALLER__.module), :_wormwood_gql_query, document)
